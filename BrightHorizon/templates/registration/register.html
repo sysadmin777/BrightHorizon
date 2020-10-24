@@ -1,0 +1,30 @@
+﻿{% extends "leagueapp/layout.html" %}
+
+{% block content %}
+
+<h2>Try it Free for 30 Days!</h2>
+
+      <form method="post">
+
+        {% csrf_token %}
+
+        {% for field in form %}
+
+        <p>
+        <div class="form-group">
+        {{field}}
+        </div>
+        
+        {% if field.help_text %}
+        <br /><small style="color: grey">{{ field.help_text|safe }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+        <p style="color: red">{{ error }}</p>
+        {% endfor %}
+
+        {% endfor %}<br />
+    <button class="btn btn-primary" type="submit">Sign Me Up</button>
+  </form>
+
+
+{% endblock %}
