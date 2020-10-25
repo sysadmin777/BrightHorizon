@@ -29,6 +29,8 @@ from django.utils.text import slugify
 import uuid
 from django.db import connection
 
+from main.models import goal, task, UserGoal, UserCompletedTasks
+
 # Create your views here.
 class PasswordContextMixin:
 
@@ -90,3 +92,19 @@ def signup(request):
 
 def home(request):
     return render( request, 'index.html')
+
+def assign(request):
+    if request.method == 'POST':
+
+        return redirect('assign.html')
+
+    else:
+
+        goals = goal.objects.all()
+        #tasks = Task.objects.all()
+        userGoals = UserGoal.objects.all().filter(owner=request.user.username)
+
+
+        context = {'goals':goals, 'userGoals':userGoals}
+
+        return render( request, 'assign.html', context)

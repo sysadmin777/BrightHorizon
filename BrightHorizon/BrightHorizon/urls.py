@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from main.views import home, signup
+from main.views import home, signup, assign
 from main import forms as mainforms
 import django.contrib.auth.views as auth_views
 from main import views as core_views
@@ -44,4 +44,6 @@ urlpatterns = [
             'next_page': '',
         },
         name='logout'),
+        
+    path('assign/', assign, name='assign'),
 ]
