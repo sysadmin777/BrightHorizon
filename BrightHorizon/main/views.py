@@ -30,6 +30,7 @@ import uuid
 from django.db import connection
 
 from main.models import goal, task, UserGoal, UserCompletedTasks
+from main.forms import AssignGoalForm, RemoveGoalForm
 
 # Create your views here.
 class PasswordContextMixin:
@@ -95,16 +96,56 @@ def home(request):
 
 def assign(request):
     if request.method == 'POST':
+        if 'assign' in request.POST:
+            form = AssignGoalForm(request.POST)
+            if form.is_valid():
 
-        return redirect('assign.html')
+                obj = form.save(commit=False)
+                obj.goal_complete = False
+                obj.suggested_complete_date = '2020-10-25'
+                obj.owner = request.user.username
+
+                obj.goal_id = request.POST.get('goalID', None)
+                #obj.goal_id = form.cleaned_data.get('goalid') #< ???
+
+                obj.save()
+                return redirect('assign')
+            else:
+                return redirect('ThisIsBROKEN.html')
+
+        elif 'remove' in request.POST:
+            form = RemoveGoalForm(request.POST)
+            if form.is_valid():
+                obj = form.save(commit=False)
+                pk = request.POST.get('userGoalID', None)
+
+                post = get_object_or_404(UserGoal, pk=pk)
+
+                post.delete()
+                #.delete()
+                return redirect('assign')
+            else:
+                return redirect('BROKEN.html')
 
     else:
-
+        assignForm = AssignGoalForm()
+        removeForm = RemoveGoalForm()
+        
         goals = goal.objects.all()
         #tasks = Task.objects.all()
         userGoals = UserGoal.objects.all().filter(owner=request.user.username)
 
+        newGoals = []
 
-        context = {'goals':goals, 'userGoals':userGoals}
+        for aGoal in goals:
+            #if aGoal is not in UserGoals, append.
+            goalNotAssigned = True
+            for assignedGoal in userGoals:
+                if aGoal.id == assignedGoal.goal_id:
+                    goalNotAssigned = False
+            if goalNotAssigned == True:
+                newGoals.append({"id" : aGoal.id, "goal_title" : aGoal.goal_title})
+
+        context = {'goals':newGoals, 'userGoals':userGoals, 'assignForm':assignForm, 'removeForm':removeForm}
 
         return render( request, 'assign.html', context)

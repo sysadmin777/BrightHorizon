@@ -26,7 +26,7 @@ class UserGoal(models.Model):
     suggested_complete_date = models.DateField()
     owner = models.TextField()
     def __str__(self):
-        return self.goal
+        return str(self.goal)
 
 class UserCompletedTasks(models.Model):
     goal = models.ForeignKey(UserGoal, on_delete=models.CASCADE)
@@ -34,4 +34,4 @@ class UserCompletedTasks(models.Model):
     points = models.IntegerField()
     owner = models.TextField()
     def __str__(self):
-        return self.goal
+        return str(self.goal)
