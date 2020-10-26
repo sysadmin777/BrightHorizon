@@ -1,9 +1,22 @@
 ﻿{% extends "layout.html" %}
 
 {% block content %}
+<style>
+  h2 {
+      margin-top: 5px;
+      margin-bottom: 20px;
+  }
+  .form-group {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+  }
+</style>
 
-<h2>Welcome!</h2>
-
+<div class="row">
+  <div class="col-md-5 center-column text-center">
+  <h2>Welcome!</h2>
       <form method="post">
 
         {% csrf_token %}
@@ -23,8 +36,9 @@
         {% endfor %}
 
         {% endfor %}<br />
-    <button class="btn btn-primary" type="submit">Sign Me Up</button>
-  </form>
-
+      <button class="btn btn-primary" type="submit">Sign Me Up</button>
+    </form>
+  </div>
+</div>
 
 {% endblock %}

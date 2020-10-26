@@ -29,8 +29,8 @@ from django.utils.text import slugify
 import uuid
 from django.db import connection
 
-from main.models import goal, task, UserGoal, UserCompletedTasks
-from main.forms import AssignGoalForm, RemoveGoalForm
+from main.models import goal, task, UserGoal, UserTask
+from main.forms import AssignGoalForm, RemoveGoalForm, EditTaskForm
 
 # Create your views here.
 class PasswordContextMixin:
@@ -75,6 +75,9 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         return super().form_valid(form)
         
 def signup(request):
+    if request.user.is_authenticated == True:
+        return redirect('home')
+
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -95,20 +98,29 @@ def home(request):
     return render( request, 'index.html')
 
 def assign(request):
-    if request.method == 'POST':
+    if request.user.is_authenticated == False:
+        return redirect('home')
+
+    elif request.method == 'POST':
         if 'assign' in request.POST:
             form = AssignGoalForm(request.POST)
             if form.is_valid():
 
                 obj = form.save(commit=False)
                 obj.goal_complete = False
-                obj.suggested_complete_date = '2020-10-25'
                 obj.owner = request.user.username
-
-                obj.goal_id = request.POST.get('goalID', None)
+                tempID = request.POST.get('goalID', None)
+                obj.goal_id = tempID
                 #obj.goal_id = form.cleaned_data.get('goalid') #< ???
-
                 obj.save()
+                
+
+                #Save tasks to user
+                goalTasks = task.objects.all().filter(goal_id=tempID)
+                for goalTask in goalTasks:
+                    userTask = UserTask(task=goalTask, is_completed=False, owner=request.user.username)
+                    userTask.save()
+
                 return redirect('assign')
             else:
                 return redirect('ThisIsBROKEN.html')
@@ -116,13 +128,15 @@ def assign(request):
         elif 'remove' in request.POST:
             form = RemoveGoalForm(request.POST)
             if form.is_valid():
-                obj = form.save(commit=False)
                 pk = request.POST.get('userGoalID', None)
-
                 post = get_object_or_404(UserGoal, pk=pk)
 
+                #Delete User Tasks
+                UserTask.objects.all().filter(owner=request.user.username).filter(task__goal_id=post.goal_id).delete()
+
+                #Delete User Goal
                 post.delete()
-                #.delete()
+
                 return redirect('assign')
             else:
                 return redirect('BROKEN.html')
@@ -130,13 +144,12 @@ def assign(request):
     else:
         assignForm = AssignGoalForm()
         removeForm = RemoveGoalForm()
-        
+
         goals = goal.objects.all()
         #tasks = Task.objects.all()
         userGoals = UserGoal.objects.all().filter(owner=request.user.username)
 
         newGoals = []
-
         for aGoal in goals:
             #if aGoal is not in UserGoals, append.
             goalNotAssigned = True
@@ -149,3 +162,63 @@ def assign(request):
         context = {'goals':newGoals, 'userGoals':userGoals, 'assignForm':assignForm, 'removeForm':removeForm}
 
         return render( request, 'assign.html', context)
+
+def viewgoals(request):
+    if request.user.is_authenticated == False:
+        return redirect('home')
+
+    elif request.method == 'POST':
+        form = EditTaskForm(request.POST)
+        if form.is_valid():
+            #Set completed to TRUE
+            taskID = request.POST.get('taskID', None)
+            aTask = UserTask.objects.get(pk = taskID)
+            aTask.is_completed = True
+            aTask.save()
+
+            #Check if goal is now completed, if it is, set goal_complete to True.
+            goalCompleted = True
+            userTasks = UserTask.objects.all().filter(owner=request.user.username).filter(task__goal_id=aTask.task.goal_id)
+            for userTask in userTasks:
+                if userTask.is_completed == False and userTask.task.is_bonus == False:
+                    goalCompleted = False
+
+            if goalCompleted == True:
+                aGoals = UserGoal.objects.all().filter(owner=request.user.username).filter(goal_id=aTask.task.goal_id)
+                for aGoal in aGoals:
+                    aGoal.goal_complete = True
+                    aGoal.save()
+                    return redirect('viewgoals')
+
+            return redirect('viewgoals')
+        else:
+            return redirect('ThisIsBROKEN.html')
+
+    else:
+        completeForm = EditTaskForm()
+        userGoals = UserGoal.objects.all().filter(owner=request.user.username)
+        userTasks = UserTask.objects.all().filter(owner=request.user.username)
+
+        totalPoints = 0
+        tasksList = []
+        for userGoal in userGoals:
+
+            tempTasks = UserTask.objects.all().filter(owner=request.user.username).filter(task__goal_id=userGoal.goal_id)
+            if tempTasks:
+                tasksList.append(tempTasks)
+            else:
+                tasksList.append(None)
+
+            if userGoal.goal_complete == True:
+                totalPoints = totalPoints + userGoal.goal.points_worth
+
+        #add completed tasks to points
+        for userTask in userTasks:
+            if userTask.is_completed == True:
+                totalPoints = totalPoints + userTask.task.points_worth
+
+        mainList = zip(tasksList, userGoals)
+        context = { 'mainList':mainList, 'completeForm':completeForm, 'userGoals':userGoals, 'totalPoints':totalPoints }
+
+
+        return render( request, 'viewgoals.html', context)

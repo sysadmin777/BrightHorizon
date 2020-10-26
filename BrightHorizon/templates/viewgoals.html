@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    
+
+<style>
+    .textsizehere{
+        font-size: 16px;
+    }
+
+</style>
+    
+
+
+<div class="row">
+    <div class="col-md-11 center-column textsizehere">
+
+        
+<div id="logo" class="jumbotron" style="background-color: #333333; color: ghostwhite; padding: 15px 20px;">
+    <h1 style="font-size: 34px;">Bright Horizons</h1>
+    <h2 style="font-size: 24px; color: #78c443;">{{ user.first_name }}'s  Dashboard</h2>
+    <div style="font-size: 20px; color: white; text-align: center; background-color:#333333; border-radius: 10px;">
+        <span>Total Points: </span>
+        <span><b>{{totalPoints}}</b></span>
+    </div>
+</div>
+
+
+{% if not userGoals %}
+<h4 style="text-align: center;">
+You don't have any goals assigned!
+<br>
+Go to <a href="../assign">assign goals</a> to get some.
+</h4>
+{% else %}
+{% for tasks, userGoal in mainList %}
+
+<hr />
+<br />
+<h1 style="font-size: 28px; text-align: center; background-color: #333333; color: ghostwhite; 
+ padding: 15px 15px 5px; margin-bottom: 0;">
+ {% if userGoal.goal_complete %}
+ <del>
+    {{userGoal}}
+</del>
+{% else %}
+    {{userGoal}}
+{% endif %}
+</h1>
+<p style="font-size: 14px; text-align: center; background-color: #333333; color: ghostwhite; padding-bottom:5px;">
+    Start Date: {{userGoal.start_date}} &nbsp; | &nbsp;
+    Worth {{userGoal.goal.points_worth}} Points
+    &nbsp; | 
+    {% if userGoal.goal_complete %}
+    <b>Completed</b>
+    {% else %}
+    <b>Not Completed</b>
+    {% endif %}
+
+</p>
+
+<table id="tblData" class="table">
+    {% if not tasks %}
+    <h3 style="text-align: center;">
+    ERROR! No tasks assigned to this goal!
+    </h3>
+    {% else %}
+    <thead>
+        <tr style="font-size: larger;">
+            <th>
+                Tasks
+            </th>
+            <th>
+                Points
+            </th>
+            <th>
+                Requirement
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                &nbsp;
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+
+        {% for task in tasks %}
+
+        <tr>
+            <td>
+                {{task.task}}
+            </td>
+            <td>
+                {{task.task.points_worth}}
+            </td>
+            <td>
+                {% if not task.task.is_bonus %}
+                Required
+                {% else %}
+                Optional
+                {% endif %}
+            </td>
+            <td>
+                {% if task.is_completed %}
+                Complete
+                {% else %}
+                Incomplete
+                {% endif %}
+            </td>
+            <td style="text-align: center;">
+                {% if not task.is_completed %}
+                    {% if userGoal.goal_complete %}
+                    &nbsp;
+                    {% else %}
+                    <form action = "" method="POST">
+                        {% csrf_token %}
+                        {{ completeForm }}
+        
+                        <input type="hidden" name="taskID" value="{{task.id}}" />
+                        <input type="submit" value="Complete" name="complete" class="btn btn-sm btn-success" />
+                    </form>
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+
+    </tbody>
+</table>
+
+
+{% endfor %}
+{% endif %}
+
+</div>
+</div>
+
+{% endblock %}
