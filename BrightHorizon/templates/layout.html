@@ -23,16 +23,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="" class="navbar-brand">Bright Horizons</a>
+                <a href="/" class="navbar-brand">Bright Horizons</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/">Home</a></li>
-                    
-
+                    {% if user.is_authenticated %}
+                    <li><a href="/view/">View Goals</a></li>
                     <li><a href="/assign/">Assign Goals</a></li>
-
-                   
+                    {% endif %}
                 </ul>
                 {% include 'loginpartial.html' %}
             </div>

@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import FileExtensionValidator
 import main.models
 
-from main.models import goal, UserGoal
+from main.models import goal, UserGoal, task, UserTask
 
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
@@ -47,14 +47,21 @@ class AssignGoalForm(forms.ModelForm):
     
 
     class Meta:
-        exclude = ('goal','goal_complete', 'suggested_complete_date', 'owner', )
+        exclude = ('goal', 'start_date', 'goal_complete', 'owner',)
         model = UserGoal
-        fields = []#('goal','goal_complete', 'suggested_complete_date', 'owner', )
+        fields = []
 
 
 class RemoveGoalForm(forms.ModelForm):
     class Meta:
+        exclude = ('goal', 'start_date', 'goal_complete', 'owner',)
         model = UserGoal
+        fields = []
+
+class EditTaskForm(forms.ModelForm):
+    class Meta:
+        exclude = ('task', 'is_completed','owner',)
+        model = UserTask
         fields = []
 
 #<input type="hidden" type="text" value="{{goal.id}}" />

@@ -1,7 +1,12 @@
 body {
+    background-color: #B7D6FF;
     padding-top: 50px;
     padding-bottom: 20px;
 }
+
+a {
+    color: darkblue;
+  }
 
 #logo {
     text-align: center;
@@ -47,4 +52,44 @@ input[type="checkbox"].input-validation-error {
 
 .validation-summary-valid {
     display: none;
+}
+
+h4 {
+    padding: 10px 0px;
+}
+b {
+    padding-left: 5px;
+}
+.center-column {
+    float: none;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #E6E6E6;
+    border-radius: 3px;
+    box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.75);
+}
+.item-row {
+    background-color: #333333;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 20px;
+    box-shadow: 0px -1px 10px -4px rgba(0,0,0,0.75);
+}
+
+.column {
+    float: none;
+    margin: 20px;
+    padding: 20px;
+    background-color: #E6E6E6;
+    border-radius: 3px;
+    box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.75);
+}
+h2 {
+    margin-top: 5px;
+}
+
+hr {
+    border-top: 1px solid black;
 }

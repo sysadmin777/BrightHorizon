@@ -3,30 +3,29 @@
     {% csrf_token %}
   
     <ul class="nav navbar-nav navbar-right">
-        
+                
 
         <div class="dropdown show">
-           <a class="btn btn-secondary dropdown-toggle" href="#" role="button"> <span class="navbar-brand">Hello {{ user.first_name }}!</span></a>
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="navbar-brand">My Account</span>
-  </a>
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" style="padding:0px; border:0px; background-color:#222222;"> <span class="navbar-brand" style="font-size: 15px; padding: auto;">Hello {{ user.first_name }}!</span></a>
+            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" style="padding:0px; border:0px; background-color:#222222;" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="navbar-brand" style="font-size: 15px; padding: auto;">My Account</span>
+            </a>
 
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-      <li><a href="{% url 'changepassword' %}">Change Password</a></li>
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-      
-  </div>
-</div>
+                <li><a href="{% url 'changepassword' %}">Change Password</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+                
+            </div>
+        </div>
     </ul>
-
 </form>
 
 {% else %}
 
 <ul class="nav navbar-nav navbar-right">
-    <li><a href="{% url 'login' %}">Log in</a></li>
-    <li><a href="{% url 'register' %}">Sign Up</a></li>
+    <li><a href="{% url 'login' %}" style="font-size: 15px;">Log in</a></li>
+    <li><a href="{% url 'register' %}" style="font-size: 15px;">Sign Up</a></li>
 
 </ul>
 

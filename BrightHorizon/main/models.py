@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 # Create your models here.
 #Graduation, Certification, Get a Job
@@ -10,6 +11,7 @@ from django.db import models
 
 class goal(models.Model):
     goal_title = models.TextField()
+    points_worth = models.IntegerField(default=100)
     def __str__(self):
         return self.goal_title
 
@@ -17,21 +19,21 @@ class task(models.Model):
     task_title = models.TextField()
     goal = models.ForeignKey(goal, on_delete=models.CASCADE)
     is_bonus = models.BooleanField(default=False)
+    points_worth = models.IntegerField(default=10)
     def __str__(self):
         return self.task_title
 
 class UserGoal(models.Model):
     goal = models.ForeignKey(goal, on_delete=models.CASCADE)
+    start_date = models.DateField(default=datetime.date.today)
     goal_complete = models.BooleanField(default=False)
-    suggested_complete_date = models.DateField()
     owner = models.TextField()
     def __str__(self):
         return str(self.goal)
 
-class UserCompletedTasks(models.Model):
-    goal = models.ForeignKey(UserGoal, on_delete=models.CASCADE)
-    task_completed = models.ForeignKey(task, on_delete=models.CASCADE)
-    points = models.IntegerField()
+class UserTask(models.Model):
+    task = models.ForeignKey(task, on_delete=models.CASCADE)
+    is_completed = models.BooleanField(default=False)
     owner = models.TextField()
     def __str__(self):
-        return str(self.goal)
+        return str(self.task)
