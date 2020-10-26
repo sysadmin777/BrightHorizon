@@ -7,6 +7,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import FileExtensionValidator
 import main.models
 
+from main.models import goal, UserGoal
+
 class BootstrapAuthenticationForm(AuthenticationForm):
     """Authentication form which uses boostrap CSS."""
     username = forms.CharField(max_length=254,
@@ -38,3 +40,22 @@ class ChPasswordForm(PasswordChangeForm):
         model = User
         fields = ('old_password','new_password1', 'new_password2', )
 
+
+class AssignGoalForm(forms.ModelForm):
+
+    #goal = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Name of Your League'}),max_length=200, required=True, help_text='')
+    
+
+    class Meta:
+        exclude = ('goal','goal_complete', 'suggested_complete_date', 'owner', )
+        model = UserGoal
+        fields = []#('goal','goal_complete', 'suggested_complete_date', 'owner', )
+
+
+class RemoveGoalForm(forms.ModelForm):
+    class Meta:
+        model = UserGoal
+        fields = []
+
+#<input type="hidden" type="text" value="{{goal.id}}" />
+#<input type="submit" value="Assign" class="btn btn-primary" /><b> {{goal}} </b>

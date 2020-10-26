@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #B7D6FF;
+    }
+    h4 {
+        padding: 10px 0px;
+    }
+    b {
+        padding-left: 5px;
+    }
+    .center-column {
+        float: none;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #E6E6E6;
+        border-radius: 3px;
+        box-shadow: 6px 2px 30px 0px rgba(0,0,0,0.75);
+    }
+    .item-row {
+        background-color: #333333;
+        margin: 10px;
+        padding: 20px;
+        border-radius: 3px;
+        color: #fff;
+        font-size: 20px;
+        box-shadow: 0px -1px 10px -4px rgba(0,0,0,0.75);
+    }
+</style>
+
+
+<br />
+<div class="row">
+    <div class="col-md-7 center-column">
+
+        <h2>Assigned Goals:</h2>
+        {% if not userGoals %}
+            <h4>You don't have any goals assigned!</h4>
+        {% else %}
+        {% for userGoal in userGoals %}
+        <div class="item-row">
+            <form action = "" method="POST">
+                {% csrf_token %}
+                {{ removeForm }}
+                
+                <input type="hidden" name="userGoalID" value="{{userGoal.id}}" />
+                <input type="submit" value="Remove" name="remove" id="{{userGoal.id}}" class="btn btn-danger" /><b> {{userGoal}}</b>
+            </form>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <br>
+
+
+        <h2>Available Goals:</h2>
+        {% if not goals %}
+            <h4>There are no more goals available!</h4>
+        {% else %}
+        {% for goal in goals %}
+        <div class="item-row">
+            <form action = "" method="POST">
+                {% csrf_token %}
+                {{ assignForm }}
+
+                <input type="hidden" name="goalID" value="{{goal.id}}" />
+                <input type="submit" value="Assign" name="assign" class="btn btn-primary" /><b> {{goal.goal_title}}</b>
+            </form>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+    </div>
+    <br />
+</div>
+
+
+
+{% endblock %}
