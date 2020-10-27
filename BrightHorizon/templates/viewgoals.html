@@ -59,6 +59,7 @@ Go to <a href="../assign">assign goals</a> to get some.
 
 </p>
 
+<div class="table-responsive">
 <table id="tblData" class="table">
     {% if not tasks %}
     <h3 style="text-align: center;">
@@ -66,20 +67,20 @@ Go to <a href="../assign">assign goals</a> to get some.
     </h3>
     {% else %}
     <thead>
-        <tr style="font-size: larger;">
-            <th>
+        <tr>
+            <th scope="col">
                 Tasks
             </th>
-            <th>
+            <th scope="col">
                 Points
             </th>
-            <th>
+            <th scope="col">
                 Requirement
             </th>
-            <th>
+            <th scope="col">
                 Status
             </th>
-            <th>
+            <th scope="col">
                 &nbsp;
             </th>
         </tr>
@@ -130,7 +131,7 @@ Go to <a href="../assign">assign goals</a> to get some.
 
     </tbody>
 </table>
-
+</div>
 
 {% endfor %}
 {% endif %}
