@@ -72,7 +72,7 @@ class PasswordChangeView(PasswordContextMixin, FormView):
         form.save()
         update_session_auth_hash(self.request, form.user)
 
-        return super().form_valid(form)
+        return redirect('viewgoals')
         
 def signup(request):
     if request.user.is_authenticated == True:
